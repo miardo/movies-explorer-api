@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
 const { login, createUser } = require('./controllers/users');
-const auth = require('./middlewares/auth');
+// const auth = require('./middlewares/auth');
 const handleErrors = require('./middlewares/handleErrors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -62,8 +62,8 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use('/', auth, require('./routes/users'));
-app.use('/', auth, require('./routes/movies'));
+app.use('/', require('./routes/users'));
+app.use('/', require('./routes/movies'));
 
 app.use(errorLogger);
 

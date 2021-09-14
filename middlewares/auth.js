@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    next(new E401('Необходима авторизация.2'));
+    next(new E401('Необходима авторизация.'));
   }
 
   const token = authorization;

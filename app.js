@@ -7,11 +7,10 @@ const { PORT = 3000 } = process.env;
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const { errors, celebrate, Joi } = require('celebrate');
-const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
 const { login, createUser } = require('./controllers/users');
-// const auth = require('./middlewares/auth');
+const auth = require('./middlewares/auth');
 const handleErrors = require('./middlewares/handleErrors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -31,14 +30,10 @@ const corsOptions = {
 
 mongoose.connect('mongodb://localhost:27017/moviesdb', {
   useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
   useUnifiedTopology: true,
 });
 
 app.use(cors(corsOptions));
-
-app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -58,12 +53,12 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).max(35).required(),
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().min(2).max(30).required(),
   }),
 }), createUser);
 
-app.use('/', require('./routes/users'));
-app.use('/', require('./routes/movies'));
+app.use('/', auth, require('./routes/users'));
+app.use('/', auth, require('./routes/movies'));
 
 app.use(errorLogger);
 

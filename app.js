@@ -14,8 +14,6 @@ const { login, createUser } = require('./controllers/users');
 const handleErrors = require('./middlewares/handleErrors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const E404 = require('./middlewares/E404');
-
 const corsOptions = {
   origin: [
     'https://diplom.karimov.nomoredomains.monster',
@@ -33,7 +31,7 @@ mongoose.connect('mongodb://localhost:27017/moviesdb', {
   useUnifiedTopology: true,
 });
 
-app.use(cors(corsOptions));
+app.use('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -63,10 +61,6 @@ app.use('/', require('./routes/movies'));
 app.use(errorLogger);
 
 app.use(errors());
-
-app.use('*', (req, res, next) => {
-  next(new E404('Страница не найдена'));
-});
 
 app.use(handleErrors);
 

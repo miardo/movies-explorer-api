@@ -58,12 +58,11 @@ module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.movieId)
     .orFail(new E404('Фильм с указанным _id не найден.'))
     .then((movie) => {
-      if (movie.owner.toString() === req.user._id) {
-        movie.remove();
-        res.status(200).send({ message: 'Фильм удалён.' });
-      } else {
-        next(new E403('Невозможно удалить чужой фильм.'));
+      if (req.user._id.toString() === movie.owner.toString()) {
+        return movie.remove()
+          .then(() => res.status(200).send({ message: 'Фильм удалён.' }));
       }
+      throw new E403('Невозможно удалить чужой фильм.');
     })
     .catch((err) => {
       if (err.name === 'CastError') {

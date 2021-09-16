@@ -13,12 +13,7 @@ module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(new E404('Пользователь с указанным _id не найден.'))
     .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new E400('Переданы некорректные данные.'));
-      }
-      next(err);
-    });
+    .catch((err) => next(err));
 };
 
 module.exports.updateUser = (req, res, next) => {
@@ -51,9 +46,6 @@ module.exports.createUser = (req, res, next) => {
       email: user.email,
     }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new E400('Переданы некорректные данные.'));
-      }
       if (err.name === 'MongoError' && err.code === 11000) {
         next(new E409('Пользователь с таким email уже существует.'));
       }
@@ -72,9 +64,6 @@ module.exports.login = (req, res, next) => {
       res.status(200).send({ token });
     })
     .catch((err) => {
-      if (err.statusCode === 500) {
-        next(err);
-      }
-      next(new E401('Неправильные почта или пароль.'));
+      next(new E401(err.message));
     });
 };

@@ -6,15 +6,12 @@ const app = express();
 const { PORT = 3000 } = process.env;
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const { errors, celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const cors = require('cors');
+const router = require('./routes/index');
 
-const { login, createUser } = require('./controllers/users');
-const auth = require('./middlewares/auth');
 const handleErrors = require('./middlewares/handleErrors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-
-const E404 = require('./middlewares/E404');
 
 const corsOptions = {
   origin: [
@@ -42,31 +39,11 @@ app.use(helmet());
 
 app.use(requestLogger);
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
-  }),
-}), login);
-
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().min(8).max(35).required(),
-    name: Joi.string().min(2).max(30).required(),
-  }),
-}), createUser);
-
-app.use('/', auth, require('./routes/users'));
-app.use('/', auth, require('./routes/movies'));
+app.use('/', router);
 
 app.use(errorLogger);
 
 app.use(errors());
-
-app.use('*', (req, res, next) => {
-  next(new E404('Страница не найдена'));
-});
 
 app.use(handleErrors);
 

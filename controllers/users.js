@@ -46,12 +46,12 @@ module.exports.createUser = (req, res, next) => {
       email: user.email,
     }))
     .catch((err) => {
-      if (err.name === 'MongoError' && err.code === 11000) {
+      if (err.code === 11000) {
         next(new E409('Пользователь с таким email уже существует.'));
+      } else {
+        next(err);
       }
-      next(err);
-    })
-    .catch(next);
+    });
 };
 
 module.exports.login = (req, res, next) => {

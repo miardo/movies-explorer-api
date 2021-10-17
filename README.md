@@ -5,7 +5,7 @@
 
 - `Backend` https://api.diplom.karimov.nomoredomains.monster
 
-- `Server ip`  62.84.113.214
+- `Server ip`  178.154.226.192
 
 ## Стек технологий
 EXPRESS, MONGODB, NODE

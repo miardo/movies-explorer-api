@@ -20,6 +20,7 @@ const corsOptions = {
     'https://api.diplom.karimov.nomoredomains.monster',
     'http://api.diplom.karimov.nomoredomains.monster',
     'https://localhost:3000',
+    'http://localhost:3000',
   ],
   credentials: true,
   method: 'GET,HEAD,PUT,PATCH,POST,DELETE',
